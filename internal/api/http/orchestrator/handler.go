@@ -214,7 +214,7 @@ func parseExpressionToTasks(id, expr string) {
 		expr := expressions[id]
 		expr.Status = models.StatusExpressionCompleted
 		expr.Result = result
-		expressions[id] = expr // todo delete these?
+		expressions[id] = expr
 		expressionMutex.Unlock()
 	}
 }
