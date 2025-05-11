@@ -1,0 +1,35 @@
+version: "3.8"
+services:
+  orchestrator:
+    container_name: orchestrator
+    build:
+      context: .
+      dockerfile: Dockerfile.orchestrator
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./data:/app/data
+    environment:
+      - DB_PATH=/app/data/calculator.db
+    networks:
+      - default
+
+  agent:
+    container_name: agent
+    build:
+      context: .
+      dockerfile: Dockerfile.agent
+    depends_on:
+      - orchestrator
+    environment:
+      - COMPUTING_POWER=4
+      - ORCHESTRATOR_URL=http://orchestrator:8080
+    networks:
+      - default
+
+volumes:
+  data:
+
+networks:
+  default:
+    name: distributed-calculator-net

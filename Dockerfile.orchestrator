@@ -1,0 +1,23 @@
+FROM golang:1.24-alpine
+
+RUN apk add --no-cache gcc musl-dev
+ENV CGO_ENABLED=1
+ENV GOOS=linux
+WORKDIR /app
+
+RUN mkdir -p /app/data && chmod 777 /app/data
+
+COPY go.mod go.sum ./
+RUN go mod download
+COPY . .
+RUN go build -o orchestrator ./cmd/orchestrator
+
+COPY .env .
+
+ENV TIME_ADDITION_MS=200 \
+    TIME_SUBTRACTION_MS=200 \
+    TIME_MULTIPLICATIONS_MS=300 \
+    TIME_DIVISIONS_MS=400
+
+EXPOSE 8080
+ENTRYPOINT ["./orchestrator"]

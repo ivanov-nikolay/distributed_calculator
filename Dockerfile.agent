@@ -1,0 +1,12 @@
+FROM golang:1.24-alpine
+WORKDIR /app
+COPY go.mod go.sum ./
+RUN go mod download
+COPY . .
+RUN go build -o agent ./cmd/agent
+
+COPY .env .
+
+ENV COMPUTING_POWER=4 \
+    ORCHESTRATOR_URL=http://orchestrator:8080
+ENTRYPOINT ["./agent"]
